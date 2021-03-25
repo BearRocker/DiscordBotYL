@@ -10,6 +10,13 @@ class DiscordBot(commands.Bot):
         super().__init__(command_prefix=config.PREFIX)
         self.add_cog(Commands_list(self))
 
+    async def on_message(self, message):
+        if message.author == self.user:
+            return
+        elif message.channel.id == config.INVITE_CHANNEL_ID:
+            await message.add_reaction(config.AGREE_REACTION)
+            await message.add_reaction(config.DISAGREE_REACTION)
+
 
 bot = DiscordBot()
 bot.run(TOKEN)
