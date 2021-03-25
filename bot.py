@@ -25,4 +25,4 @@ class DiscordBot(commands.Bot):
 
 
 bot = DiscordBot()
-bot.run('Nzc2Mzk2MjA2MzM0ODA0MDA4.X60RUA.UTTOP4OUYOgY7aMiZ7A0M8JUsLo')
+bot.run(TOKEN)
