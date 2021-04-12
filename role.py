@@ -19,3 +19,12 @@ class Roles(commands.Cog):
             await author.add_roles(role)
         else:
             await author.send(f'You already have {role} role')
+
+    @commands.command(name='all_roles')
+    async def get_roles(self, ctx):
+        message = ctx.message
+        author = message.author
+        guild = ctx.guild
+        await message.delete
+        await author.send(f'Here all roles on this server {guild}:'
+                          f'{guild.roles}')

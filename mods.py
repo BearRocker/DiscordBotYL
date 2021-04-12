@@ -4,7 +4,7 @@ import config
 import random
 
 
-class Commands_list(commands.Cog):
+class CommandsList(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -41,3 +41,11 @@ class Commands_list(commands.Cog):
         message = ctx.message
         await message.delete()
         await channel.purge(limit=int(amount))
+
+    @commands.command(name='set_invite_channel')
+    async def set(self, ctx, channel_id):
+        config.INVITE_CHANNEL_ID = channel_id
+
+    @commands.command(name='set_logs_channel')
+    async def set_channel(self, ctx, channel_id):
+        config.LOGS_CHANNEL_ID = channel_id
