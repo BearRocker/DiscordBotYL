@@ -25,6 +25,9 @@ class Roles(commands.Cog):
         message = ctx.message
         author = message.author
         guild = ctx.guild
-        await message.delete
-        await author.send(f'Here all roles on this server {guild}:'
-                          f'{guild.roles}')
+        roles = []
+        for i in guild.roles[-1:0:-1]:
+            roles.append(i.name)
+        await message.delete()
+        await author.send(f'Here all roles on this server {guild}:')
+        await author.send("\n".join(roles))

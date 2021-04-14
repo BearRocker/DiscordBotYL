@@ -4,6 +4,7 @@ from discord.ext import commands
 import config
 from mods import CommandsList
 from role import Roles
+from misc import Misc
 
 
 class DiscordBot(commands.Bot):
@@ -11,6 +12,7 @@ class DiscordBot(commands.Bot):
         super().__init__(command_prefix=config.PREFIX)
         self.add_cog(CommandsList(self))
         self.add_cog(Roles(self))
+        self.add_cog(Misc(self))
 
     async def on_ready(self):
         print("I'm ready")
@@ -36,4 +38,4 @@ class DiscordBot(commands.Bot):
 
 
 bot = DiscordBot()
-bot.run(TOKEN)
+bot.run(config.DISCORD_TOKEN)
