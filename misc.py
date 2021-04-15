@@ -28,3 +28,19 @@ class Misc(commands.Cog):
         await message.delete()
         await channel.send(embed=embed)
 
+    @commands.command(name='get_gif')
+    async def random_gif(self, ctx, gif_name):
+        search = gif_name
+        api_response = self.api_instance.gifs_search_get(self.api_key, search, offset=random.randint(0, 7))
+        channel = ctx.message.channel
+        message = ctx.message
+        author = message.author
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        await message.delete()
+        embed = discord.Embed(author='BearRocker & SmokeHokage', colour=discord.Colour.from_rgb(r, g, b))
+        embed.add_field(name='Gif by', value=str(author)[:-5])
+        gif = api_response.data[0].images.downsized.url
+        embed.set_image(url=gif)
+        await channel.send(embed=embed)
