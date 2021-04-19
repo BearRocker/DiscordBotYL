@@ -12,8 +12,6 @@ class Roles(commands.Cog):
     async def add_role(self, ctx, role: discord.Role):
         message = ctx.message
         author = message.author
-        guild = ctx.guild
-        print(role, guild.roles[:][-1])
         await message.delete()
         if role not in author.roles:
             await author.add_roles(role)
