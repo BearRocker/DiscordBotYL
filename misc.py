@@ -70,9 +70,9 @@ class Misc(commands.Cog):
                                            'ban | @user reason | bans user | needs ban_members\n'
                                            'kick | @user reason | kicks user | needs kick_members\n'
                                            'clean | amount | clears channel by amount messages |'
-                                           ' needs manage_messagesn\n'
+                                           ' needs manage_messages\n'
                                            'set_muted_role | role_id | sets muted role | needs administrator\n'
-                                           'mute | @user reason | gives user MUTE role and removes other roles'
+                                           'mute | @user minutes reason | gives user MUTE role and removes other roles'
                                            ' | needs administrator```')
 
     def create_embed(self):

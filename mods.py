@@ -1,3 +1,5 @@
+import asyncio
+
 import discord
 from discord.ext import commands
 import config
@@ -80,7 +82,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='mute')
     @commands.has_permissions(administrator=True)
-    async def mute(self, ctx, user: discord.Member, *reason):
+    async def mute(self, ctx, user: discord.Member, time=0, *reason):
         if reason:
             reason = ' '.join(reason)
         else:
@@ -88,12 +90,24 @@ class Mods(commands.Cog):
         await ctx.message.delete()
         guild = ctx.guild
         avatar = user.avatar_url
+        user_roles = []
         for roles in user.roles[1:]:
+            user_roles.append(roles)
             await user.remove_roles(guild.get_role(roles.id))
         await user.add_roles(guild.get_role(config.MUTE_ROLE))
         channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
-        embed = self.create_embed('Mute')
+        embed = self.create_embed('')
         embed.add_field(name='Muted:', value=user.name)
         embed.add_field(name='Reason:', value=reason)
+        if time > 0:
+            embed.add_field(name='Time:', value=str(time) + ' minute(s)')
+        else:
+            embed.add_field(name='Time', value='NaN')
         embed.set_image(url=avatar)
         await channel.send(embed=embed)
+        if time > 0:
+            await asyncio.sleep(time * 60)
+            await user.remove_roles(guild.get_role(config.MUTE_ROLE))
+            if user_roles:
+                for i in user_roles:
+                    await user.add_roles(guild.get_role(i.id))
