@@ -1,3 +1,5 @@
+import random
+
 import discord
 from discord.utils import get
 from discord.ext import commands
@@ -16,6 +18,12 @@ class DiscordBot(commands.Bot):
         self.add_cog(Misc(self))
         self.add_cog(InvitesToGame(self))
 
+    def create_embed(self, title):
+        r = random.randint(0, 255)
+        g = random.randint(0, 255)
+        b = random.randint(0, 255)
+        return discord.Embed(author='BearRocker & Игн0р', title=title, colour=discord.Colour.from_rgb(r, g, b))
+
     async def on_ready(self):
         print("I'm ready")
 
@@ -33,6 +41,12 @@ class DiscordBot(commands.Bot):
             await channel.send(f'{user} has been unbanned')
         except Exception:
             print(f'Error 404: channel has type None')
+
+    async def on_member_join(self, member):
+        channel = self.get_channel(config.LOGS_CHANNEL_ID)
+        embed = self.create_embed('New member!')
+        embed.add_field(name='New member:', value=member.name)
+        await channel.send(embed=embed)
 
 
 bot = DiscordBot()
