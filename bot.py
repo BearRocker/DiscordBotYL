@@ -7,6 +7,7 @@ import config
 from mods import Mods
 from role import Roles
 from misc import Misc
+from music import Music
 from invites import InvitesToGame
 
 intents = discord.Intents.default()
@@ -20,6 +21,10 @@ class DiscordBot(commands.Bot):
         self.add_cog(Roles(self))
         self.add_cog(Misc(self))
         self.add_cog(InvitesToGame(self))
+        self.add_cog(Music(self))
+        self.activity = discord.Activity(type=discord.ActivityType.watching,
+                                         name=f'For guild FoD '
+                                              f'Prefix - !')
         self.emoji_to_role = {
             discord.PartialEmoji(name='1️⃣'): 833734030884732960,
             discord.PartialEmoji(name='2️⃣'): 833734064565518348,

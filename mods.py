@@ -14,7 +14,7 @@ class Mods(commands.Cog):
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
-        return discord.Embed(author='BearRocker & Sm0keHokage', title=title, colour=discord.Colour.from_rgb(r, g, b))
+        return discord.Embed(author='BearRocker & Игн0р', title=title, colour=discord.Colour.from_rgb(r, g, b))
 
     @commands.command(name='ban')
     @commands.has_permissions(ban_members=True)
@@ -66,19 +66,32 @@ class Mods(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def set(self, ctx, channel_id):
         await ctx.message.delete()
+        channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
+        embed = self.create_embed('')
         config.INVITE_CHANNEL_ID = int(channel_id)
+        embed.add_field(name='CHANGED INVITE CHANNEL', value=self.bot.get_channel(config.INVITE_CHANNEL_ID))
+        await channel.send(embed=embed)
 
     @commands.command(name='set_logs_channel')
     @commands.has_permissions(administrator=True)
     async def set_channel(self, ctx, channel_id):
         await ctx.message.delete()
+        channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
+        embed = self.create_embed('')
         config.LOGS_CHANNEL_ID = int(channel_id)
+        embed.add_field(name='CHANGED LOGS CHANNEL', value=self.bot.get_channel(config.LOGS_CHANNEL_ID))
+        await channel.send(embed=embed)
 
     @commands.command(name='set_muted_role')
     @commands.has_permissions(administrator=True)
     async def set_role(self, ctx, role_id):
         await ctx.message.delete()
+        channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
         config.MUTE_ROLE = role_id
+        guild = ctx.guild
+        embed = self.create_embed('')
+        embed.add_field(name='CHANGED MUTE ROLE', value=guild.get_role(role_id).name)
+        await channel.send(embed=embed)
 
     @commands.command(name='mute')
     @commands.has_permissions(administrator=True)

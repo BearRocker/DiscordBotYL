@@ -13,7 +13,7 @@ class InvitesToGame(commands.Cog):
         r = random.randint(0, 255)
         g = random.randint(0, 255)
         b = random.randint(0, 255)
-        return discord.Embed(author='BearRocker & Sm0keHokage', colour=discord.Colour.from_rgb(r, g, b))
+        return discord.Embed(author='BearRocker & Игн0р', colour=discord.Colour.from_rgb(r, g, b))
 
     def get_channel(self):
         return self.bot.get_channel(config.INVITE_CHANNEL_ID)

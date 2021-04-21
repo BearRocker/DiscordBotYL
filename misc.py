@@ -63,6 +63,10 @@ class Misc(commands.Cog):
                                        'invite_game | time mode game | Creating invite to game at specified time\n'
                                        'vote | ... V2: ... | When you write this command to division all to 2 variants'
                                        ' you need to type V2:\n'
+                                       'Music:\n'
+                                       'play | url | Plays yt video in your voice channel\n'
+                                       'volume | number | set volume level to number\n'
+                                       "stop | None | Stops audio if it's playing"
                                        '```')
         if ctx.message.author.guild_permissions.manage_messages:
             await ctx.message.channel.send('```'
