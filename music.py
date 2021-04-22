@@ -10,7 +10,8 @@ import config
 from discord.ext import commands
 
 youtube_dl.utils.bug_reports_message = lambda: ''
-
+queue = []
+check = False
 ytdl_format_options = {
     'format': 'bestaudio/best',
     'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
@@ -71,15 +72,20 @@ class Music(commands.Cog):
 
     @commands.command(name='play')
     async def play(self, ctx, url):
+        global check, queue
         embed = self.create_embed('')
-        async with ctx.typing():
-            player = await YTDLSource.from_url(url)
-            embed.add_field(name='Playing audio:', value=player.title)
-            ctx.voice_client.play(player)
-            ctx.voice_client.source.volume = config.VIDEO_VOLUME
-            message = await ctx.send(embed=embed)
-        while ctx.voice_client.is_playing():
-            await sleep(1)
+        queue.append(url)
+        if not check:
+            check = True
+            async with ctx.typing():
+                player = await YTDLSource.from_url(queue.pop())
+                embed.add_field(name='Playing audio:', value=player.title)
+                ctx.voice_client.play(player)
+                ctx.voice_client.source.volume = config.VIDEO_VOLUME
+                message = await ctx.send(embed=embed)
+            while ctx.voice_client.is_playing():
+                await sleep(1)
+            check = False
         await ctx.voice_client.disconnect()
         embed_2 = self.stop_()
         await message.edit(embed=embed_2)
@@ -119,5 +125,3 @@ class Music(commands.Cog):
             else:
                 await ctx.send("You are not connected to a voice channel.")
                 raise commands.CommandError("Author not connected to a voice channel.")
-        elif ctx.voice_client.is_playing():
-            ctx.voice_client.stop()
