@@ -50,7 +50,7 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
             id INT,
             cost BIGINT
         )""")
-        for guild in client.guilds:
+        for guild in self.guilds:
             for member in guild.members:
                 if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
                     cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 1, {guild.id})")
