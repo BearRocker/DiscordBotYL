@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import random
+from config import TOKEN, PREFIX
 
 
 class TicTacToe(commands.Cog):
@@ -12,7 +13,7 @@ class TicTacToe(commands.Cog):
         self.gameOver = True
 
         self.board = []
-        self.winningConditions = [
+        self.check_winer = [
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],
@@ -76,7 +77,7 @@ class TicTacToe(commands.Cog):
                         else:
                             self.line += " " + self.board[x]
 
-                    self.checkWinner(self.winningConditions, mark)
+                    self.checkWinner(self.check_winer, mark)
                     if self.gameOver == True:
                         await ctx.send(mark + " победил!")
                     elif self.count == 9:
@@ -99,10 +100,9 @@ class TicTacToe(commands.Cog):
             else:
                 await ctx.send("Начните новую игру с помощью команды !tictactoe.")
 
-    def checkWinner(self, winningConditions, mark):
-        for condition in winningConditions:
-            if self.board[condition[0]] == mark and self.board[condition[1]] == mark and\
-                    self.board[condition[2]] == mark:
+    def checkWinner(self, check_winer, mark):
+        for check in check_winer:
+            if self.board[check[0]] == mark and self.board[check[1]] == mark and self.board[check[2]] == mark:
                 self.gameOver = True
 
     @tictactoe.error
