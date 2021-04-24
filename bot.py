@@ -9,7 +9,7 @@ from role import Roles
 from misc import Misc
 from music import Music
 from invites import InvitesToGame
-
+import sqlite3
 intents = discord.Intents.default()
 intents.members = True
 connection = sqlite3.connect('server.db')
