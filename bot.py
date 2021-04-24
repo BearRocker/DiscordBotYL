@@ -1,4 +1,5 @@
 import random
+import sqlite3
 
 import discord
 from discord.utils import get
@@ -9,7 +10,10 @@ from role import Roles
 from misc import Misc
 from music import Music
 from invites import InvitesToGame
-import sqlite3
+from gamebot import GameBot
+from tictactoe import TicTacToe
+
+
 intents = discord.Intents.default()
 intents.members = True
 connection = sqlite3.connect('server.db')
@@ -22,8 +26,10 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         self.add_cog(Mods(self))
         self.add_cog(Roles(self))
         self.add_cog(Misc(self))
-        self.add_cog(InvitesToGame(self))
+        self.add_cog(InvitesToGame(self,))
         self.add_cog(Music(self))
+        self.add_cog(GameBot(self, cursor, connection))
+        self.add_cog(TicTacToe(self))
         self.activity = discord.Activity(type=discord.ActivityType.watching,
                                          name=f'Prefix - {self.command_prefix}')
         self.emoji_to_role = {
@@ -38,18 +44,18 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
 
     async def on_ready(self):  # При инициализации бота
         cursor.execute("""CREATE TABLE IF NOT EXISTS users (
-            name TEXT,
-            id INT,
-            cash BIGINT,
-            rep INT,
-            lvl INT,
-            server_id INT
-        )""")
+                    name TEXT,
+                    id INT,
+                    cash BIGINT,
+                    rep INT,
+                    lvl INT,
+                    server_id INT
+                )""")
         cursor.execute("""CREATE TABLE IF NOT EXISTS shop (
-            role_id INT,
-            id INT,
-            cost BIGINT
-        )""")
+                    role_id INT,
+                    id INT,
+                    cost BIGINT
+                )""")
         for guild in self.guilds:
             for member in guild.members:
                 if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
@@ -57,7 +63,6 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
                 else:
                     pass
         connection.commit()
-
 
     async def on_message(self, message):  # При сообщении проверяется, в каком чате оно было отправлено,
         # если в указанном invite channel из файла config.py есть сообщение, то подним будут ставиться две эмоджи
@@ -80,11 +85,6 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         channel = self.get_channel(config.GREETING_CHANNEL_ID)
         embed = self.create_embed('', 0, 255, 0)
         embed.add_field(name='New member! :tada:', value=member.name)
-        if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
-            cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 1, {member.guild.id})")
-            connection.commit()
-        else:
-            pass
         await channel.send(embed=embed)
 
     async def on_member_remove(self, member):  # При выходе пользователя с сервера выводится сообщение об этом
