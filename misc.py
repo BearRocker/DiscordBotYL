@@ -12,7 +12,7 @@ class Misc(commands.Cog):
         self.bot = bot
 
     @commands.command(name='slap')
-    async def anime_slap(self, ctx, user: discord.User):
+    async def anime_slap(self, ctx, user: discord.User):  # Отправляет аниме гифку по запросу anime slap
         search = 'anime slap'
         api_response = self.api_instance.gifs_search_get(self.api_key, search, offset=random.randint(0, 7))
         channel = ctx.message.channel
@@ -26,7 +26,7 @@ class Misc(commands.Cog):
         await channel.send(embed=embed)
 
     @commands.command(name='get_gif')
-    async def random_gif(self, ctx, *gif_name):
+    async def random_gif(self, ctx, *gif_name):  # Отправляет гифку по вашему запросу
         search = ' '.join(gif_name)
         api_response = self.api_instance.gifs_search_get(self.api_key, search, offset=random.randint(0, 7))
         channel = ctx.message.channel
@@ -40,12 +40,16 @@ class Misc(commands.Cog):
         await channel.send(embed=embed)
 
     @commands.command(name='rnd')
-    async def rnd_roll(self, ctx, max):
-        result = random.randint(1, int(max))
-        channel = ctx.message.channel
-        embed = self.create_embed()
-        embed.add_field(name='Result:', value=result)
-        await channel.send(embed=embed)
+    async def rnd_roll(self, ctx, maxx: int):  # Отправляет рандомное число от 1 до указанного числа
+        try:
+            result = random.randint(1, maxx)
+            channel = ctx.message.channel
+            embed = self.create_embed()
+            embed.add_field(name='Result:', value=result)
+            await channel.send(embed=embed)
+        except TypeError:
+            channel = ctx.message.channel
+            await channel.send('WRONG TYPE')
 
     @commands.command(name='help')
     async def help(self, ctx):

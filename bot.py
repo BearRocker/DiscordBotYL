@@ -23,7 +23,7 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         self.add_cog(InvitesToGame(self))
         self.add_cog(Music(self))
         self.activity = discord.Activity(type=discord.ActivityType.watching,
-                                         name=f'Prefix - !')
+                                         name=f'Prefix - {self.command_prefix}')
         self.emoji_to_role = {
             discord.PartialEmoji(name='1️⃣'): 833734030884732960,
             discord.PartialEmoji(name='2️⃣'): 833734064565518348,

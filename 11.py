@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import random
-from config import TOKEN, PREFIX
 
 
 class TicTacToe(commands.Cog):
@@ -102,8 +101,8 @@ class TicTacToe(commands.Cog):
 
     def checkWinner(self, winningConditions, mark):
         for condition in winningConditions:
-            if self.board[condition[0]] == mark and self.board[condition[1]] == mark and self.board[
-                condition[2]] == mark:
+            if self.board[condition[0]] == mark and self.board[condition[1]] == mark and\
+                    self.board[condition[2]] == mark:
                 self.gameOver = True
 
     @tictactoe.error
@@ -121,7 +120,7 @@ class TicTacToe(commands.Cog):
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Убедитесь, что вы ввели целое число.")
 
-    @client.command()
+    @commands.command()
     async def restart(self, ctx):
         self.gameOver = True
         await ctx.send("Игра отменена.")

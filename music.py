@@ -1,16 +1,16 @@
 import asyncio
 import os
 import random
-import time
 from asyncio import sleep
 from os import listdir
+from threading import Timer
+
 import discord
 import youtube_dl
 import config
 from discord.ext import commands
-
-youtube_dl.utils.bug_reports_message = lambda: ''
 queue = []
+youtube_dl.utils.bug_reports_message = lambda: ''
 check = False
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -33,7 +33,7 @@ ffmpeg_options = {
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
-class YTDLSource(discord.PCMVolumeTransformer):
+class YTDLSource(discord.PCMVolumeTransformer):  # Класс позволяющий запускать видео с yt
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
 
@@ -54,7 +54,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 
-class Music(commands.Cog):
+class Music(commands.Cog):  # Класс с командами относящихся к музыке
     def __init__(self, bot):
         self.bot = bot
 
@@ -65,40 +65,53 @@ class Music(commands.Cog):
         return discord.Embed(author='BearRocker & Игн0р', title=title, colour=discord.Colour.from_rgb(r, g, b))
 
     @commands.command(name='join')
-    async def join(self, ctx, channel: discord.VoiceChannel):
+    async def join(self, ctx, channel: discord.VoiceChannel):  # Функция присоединения бота к войсу
         if ctx.voice_channel is not None:
             return await ctx.voice_client.move_to(channel)
         await channel.connect()
 
     @commands.command(name='play')
-    async def play(self, ctx, url):
-        global check, queue
+    async def play(self, ctx, url):  # Функция получающая на вход url, после чего вызывает класс YTDL
+        global queue
+        player = await YTDLSource.from_url(url)
         embed = self.create_embed('')
-        queue.append(url)
-        if not check:
-            check = True
+        if len(queue) == 0:
+            queue.append(player)
+            self.start_playing(ctx.voice_client, player)
             async with ctx.typing():
-                player = await YTDLSource.from_url(queue.pop())
                 embed.add_field(name='Playing audio:', value=player.title)
-                ctx.voice_client.play(player)
-                ctx.voice_client.source.volume = config.VIDEO_VOLUME
                 message = await ctx.send(embed=embed)
-            while ctx.voice_client.is_playing():
-                await sleep(1)
-            check = False
-        await ctx.voice_client.disconnect()
-        embed_2 = self.stop_()
-        await message.edit(embed=embed_2)
+        else:
+            queue.append(player)
+            message = await ctx.send(embed=embed.add_field(name='Added to queue', value=url))
+        while ctx.voice_client.is_playing():
+            await sleep(1)
+        self.start_playing(ctx.voice_client, player)
+
 
     @commands.command(name='volume')
-    async def volume(self, ctx, volume: int):
+    async def volume(self, ctx, volume: int):  # Функция изменения громкости звука
         embed = self.create_embed('')
         embed.add_field(name='Volume:', value=str(volume))
-        config.VIDEO_VOLUME = volume
+        ctx.voice_client.source.volume = volume / 100
+        config.VIDEO_VOLUME = volume / 100
         await ctx.send(embed=embed)
 
+    def start_playing(self, voice_client, player):
+        global queue
+        queue[0] = player
+        i = 0
+        while i < len(queue):
+            try:
+                voice_client.play(queue[i], after=lambda e: print('Player error: %s' % e) if e else None)
+            except:
+                pass
+            i += 1
+
     @commands.command(name='stop')
-    async def stop(self, ctx):
+    async def stop(self, ctx):  # Функция остановки звука
+        global queue
+        queue = []
         embed = self.create_embed('')
         embed.add_field(name='Stopped audio', value='🛑')
         await ctx.voice_client.disconnect()
@@ -108,7 +121,9 @@ class Music(commands.Cog):
                 os.remove(os.path.join('.', item))
         await ctx.send(embed=embed)
 
-    def stop_(self,):
+    def stop_(self):  # Аналогична async def stop
+        global queue
+        queue = []
         embed = self.create_embed('')
         embed.add_field(name='Stopped audio', value='🛑')
         all_files = listdir('.')
@@ -118,7 +133,7 @@ class Music(commands.Cog):
         return embed
 
     @play.before_invoke
-    async def ensure_voice(self, ctx):
+    async def ensure_voice(self, ctx):  # Вызывается перед тем, как сработает команда play
         if ctx.voice_client is None:
             if ctx.author.voice:
                 await ctx.author.voice.channel.connect()

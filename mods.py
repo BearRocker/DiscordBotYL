@@ -18,7 +18,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='ban')
     @commands.has_permissions(ban_members=True)
-    async def ban(self, ctx, user: discord.User, *reason):
+    async def ban(self, ctx, user: discord.User, *reason):  # Баним указанного человека
         if reason:
             reason = ' '.join(reason)
         else:
@@ -38,7 +38,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='kick')
     @commands.has_permissions(kick_members=True)
-    async def kick(self, ctx, user: discord.User, *reason):
+    async def kick(self, ctx, user: discord.User, *reason):  # Кикаем указанного человека
         if reason:
             reason = ' '.join(reason)
         else:
@@ -56,7 +56,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='clean')
     @commands.has_permissions(manage_messages=True)
-    async def clean(self, ctx, amount):
+    async def clean(self, ctx, amount):  # Очищаем канал на amount сообщений
         channel = ctx.message.channel
         message = ctx.message
         await message.delete()
@@ -64,7 +64,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='set_invite_channel')
     @commands.has_permissions(administrator=True)
-    async def set(self, ctx, channel_id):
+    async def set(self, ctx, channel_id):  # Можем изменить канал, куда отправляются сообщения с invites.py
         await ctx.message.delete()
         channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
         embed = self.create_embed('')
@@ -74,7 +74,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='set_logs_channel')
     @commands.has_permissions(administrator=True)
-    async def set_channel(self, ctx, channel_id):
+    async def set_channel(self, ctx, channel_id):  # Аналогично set_invite_channel
         await ctx.message.delete()
         channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
         embed = self.create_embed('')
@@ -84,7 +84,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='set_muted_role')
     @commands.has_permissions(administrator=True)
-    async def set_role(self, ctx, role_id):
+    async def set_role(self, ctx, role_id):  # Изменяем mute роль
         await ctx.message.delete()
         channel = self.bot.get_channel(config.LOGS_CHANNEL_ID)
         config.MUTE_ROLE = role_id
@@ -95,7 +95,7 @@ class Mods(commands.Cog):
 
     @commands.command(name='mute')
     @commands.has_permissions(administrator=True)
-    async def mute(self, ctx, user: discord.Member, time=0, *reason):
+    async def mute(self, ctx, user: discord.Member, time=0, *reason):  # Выдаём mute роль и убираем другие
         if reason:
             reason = ' '.join(reason)
         else:

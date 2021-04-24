@@ -9,7 +9,7 @@ class Roles(commands.Cog):
         self.bot = bot
 
     @commands.command(name='get_role')
-    async def add_role(self, ctx, role: discord.Role):
+    async def add_role(self, ctx, role: discord.Role):  # Добавляем роль себе
         message = ctx.message
         author = message.author
         await message.delete()
@@ -19,7 +19,7 @@ class Roles(commands.Cog):
             await author.send(f'You already have {role} role')
 
     @commands.command(name='all_roles')
-    async def get_roles(self, ctx):
+    async def get_roles(self, ctx):  # Получаем в лс все роли на сервере
         message = ctx.message
         author = message.author
         guild = ctx.guild

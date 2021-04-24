@@ -5,7 +5,7 @@ from discord.ext import commands
 import config
 
 
-class InvitesToGame(commands.Cog):
+class InvitesToGame(commands.Cog):  #
     def __init__(self, bot):
         self.bot = bot
 
@@ -18,7 +18,7 @@ class InvitesToGame(commands.Cog):
     def get_channel(self):
         return self.bot.get_channel(config.INVITE_CHANNEL_ID)
 
-    @commands.command(name='event')
+    @commands.command(name='event')  # Функция создающий приглашение на событие со всеми правилами
     async def new_event(self, ctx, time, game, event_name, *rules):
         await ctx.message.delete()
         rules = ' '.join(rules)
@@ -32,7 +32,7 @@ class InvitesToGame(commands.Cog):
         await channel.last_message.add_reaction('✅')
         await channel.last_message.add_reaction('❎')
 
-    @commands.command(name='invite_game')
+    @commands.command(name='invite_game')  # Функция создающий приглашение в игру
     async def new_game_inv(self, ctx, time, mode, game):
         await ctx.message.delete()
         embed = self.create_embed()
@@ -45,7 +45,7 @@ class InvitesToGame(commands.Cog):
         await channel.last_message.add_reaction('❎')
 
     @commands.command(name='vote')
-    async def create_vote(self, ctx, *both_var):
+    async def create_vote(self, ctx, *both_var):  # Функция в которой можно указать два варианта и проголосовать
         var1 = both_var[:both_var.index('V2:')]
         var2 = both_var[both_var.index('V2:') + 1:]
         var1 = ' '.join(var1)
