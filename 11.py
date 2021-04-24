@@ -48,10 +48,10 @@ class TicTacToe(commands.Cog):
             num = random.randint(1, 2)
             if num == 1:
                 self.turn = self.player1
-                await ctx.send("Начинет <@" + str(self.player1[0].id) + ">.")
+                await ctx.send("Начинет <@" + str(self.player1.id) + ">.")
             elif num == 2:
                 self.turn = self.player2
-                await ctx.send("Начинае <@" + str(self.player2[0].id) + ">.")
+                await ctx.send("Начинае <@" + str(self.player2.id) + ">.")
         else:
             await ctx.send("Игра уже идет! Закончите, прежде чем начинать новую.")
 
