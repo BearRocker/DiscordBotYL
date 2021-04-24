@@ -5,13 +5,14 @@ from config import TOKEN, PREFIX
 
 
 class TicTacToe(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot, connection, cursor):
         self.bot = bot
         self.player1 = ""
         self.player2 = ""
         self.turn = ""
         self.gameOver = True
-
+        self.connection = connection
+        self.cursor = cursor
         self.board = []
         self.check_winer = [
             [0, 1, 2],
@@ -25,7 +26,7 @@ class TicTacToe(commands.Cog):
         ]
 
     @commands.command()
-    async def tictactoe(self, ctx, p1: discord.Member, p2: discord.Member):
+    async def tictactoe(self, ctx, p1: discord.Member = None, p2: discord.Member = None):
 
         if self.gameOver:
             self.board = [":white_large_square:", ":white_large_square:", ":white_large_square:",
@@ -47,10 +48,10 @@ class TicTacToe(commands.Cog):
             num = random.randint(1, 2)
             if num == 1:
                 self.turn = self.player1
-                await ctx.send("Начинет <@" + str(self.player1.id) + ">.")
+                await ctx.send("Начинет <@" + str(self.player1[0].id) + ">.")
             elif num == 2:
                 self.turn = self.player2
-                await ctx.send("Начинае <@" + str(self.player2.id) + ">.")
+                await ctx.send("Начинае <@" + str(self.player2[0].id) + ">.")
         else:
             await ctx.send("Игра уже идет! Закончите, прежде чем начинать новую.")
 
@@ -61,8 +62,10 @@ class TicTacToe(commands.Cog):
             if self.turn == ctx.author:
                 if self.turn == self.player1:
                     mark = ":regional_indicator_x:"
+                    self.player1_mark = mark
                 elif self.turn == self.player2:
                     mark = ":o2:"
+                    self.player2_mark = mark
                 if 0 < pos < 10 and self.board[pos - 1] == ":white_large_square:":
                     self.board[pos - 1] = mark
                     self.count += 1
@@ -78,8 +81,16 @@ class TicTacToe(commands.Cog):
                             self.line += " " + self.board[x]
 
                     self.checkWinner(self.check_winer, mark)
-                    if self.gameOver == True:
+                    if self.gameOver:
                         await ctx.send(mark + " победил!")
+                        if self.player1_mark == mark:
+                            self.cursor.execute(
+                                "UPDATE users SET cash = cash + {} WHERE id = {}".format(1000, self.player1.id))
+                            self.connection.commit()
+                        else:
+                            self.cursor.execute(
+                                "UPDATE users SET cash = cash + {} WHERE id = {}".format(1000, self.player2.id))
+                            self.connection.commit()
                     elif self.count == 9:
                         self.gameOver = True
                         await ctx.send("Ничья")
