@@ -12,6 +12,8 @@ from invites import InvitesToGame
 
 intents = discord.Intents.default()
 intents.members = True
+connection = sqlite3.connect('server.db')
+cursor = connection.cursor()
 
 
 class DiscordBot(commands.Bot):  # Класс бота, в котором заключенны все команды
@@ -35,7 +37,27 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         return discord.Embed(author='BearRocker & Игн0р', title=title, colour=discord.Colour.from_rgb(r, g, b))
 
     async def on_ready(self):  # При инициализации бота
-        print("I'm ready")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS users (
+            name TEXT,
+            id INT,
+            cash BIGINT,
+            rep INT,
+            lvl INT,
+            server_id INT
+        )""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS shop (
+            role_id INT,
+            id INT,
+            cost BIGINT
+        )""")
+        for guild in client.guilds:
+            for member in guild.members:
+                if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
+                    cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 1, {guild.id})")
+                else:
+                    pass
+        connection.commit()
+
 
     async def on_message(self, message):  # При сообщении проверяется, в каком чате оно было отправлено,
         # если в указанном invite channel из файла config.py есть сообщение, то подним будут ставиться две эмоджи
@@ -58,6 +80,11 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         channel = self.get_channel(config.GREETING_CHANNEL_ID)
         embed = self.create_embed('', 0, 255, 0)
         embed.add_field(name='New member! :tada:', value=member.name)
+        if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
+            cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 1, {member.guild.id})")
+            connection.commit()
+        else:
+            pass
         await channel.send(embed=embed)
 
     async def on_member_remove(self, member):  # При выходе пользователя с сервера выводится сообщение об этом
