@@ -1,6 +1,7 @@
 import asyncio
 import os
 import random
+import time
 from asyncio import sleep
 from os import listdir
 from threading import Timer
@@ -88,7 +89,6 @@ class Music(commands.Cog):  # Класс с командами относящи�
             await sleep(1)
         self.start_playing(ctx.voice_client, player)
 
-
     @commands.command(name='volume')
     async def volume(self, ctx, volume: int):  # Функция изменения громкости звука
         embed = self.create_embed('')
@@ -103,6 +103,11 @@ class Music(commands.Cog):  # Класс с командами относящи�
         i = 0
         while i < len(queue):
             try:
+                if queue[i] != queue[i - 1]:
+                    all_files = listdir('.')
+                    for item in all_files:
+                        if item.endswith('.m4a') or item.endswith('.webm'):
+                            os.remove(os.path.join('.', item))
                 voice_client.play(queue[i], after=lambda e: print('Player error: %s' % e) if e else None)
             except:
                 pass
@@ -120,17 +125,6 @@ class Music(commands.Cog):  # Класс с командами относящи�
             if item.endswith('.m4a') or item.endswith('.webm'):
                 os.remove(os.path.join('.', item))
         await ctx.send(embed=embed)
-
-    def stop_(self):  # Аналогична async def stop
-        global queue
-        queue = []
-        embed = self.create_embed('')
-        embed.add_field(name='Stopped audio', value='🛑')
-        all_files = listdir('.')
-        for item in all_files:
-            if item.endswith('.m4a') or item.endswith('.webm'):
-                os.remove(os.path.join('.', item))
-        return embed
 
     @play.before_invoke
     async def ensure_voice(self, ctx):  # Вызывается перед тем, как сработает команда play
