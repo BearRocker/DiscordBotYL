@@ -70,7 +70,7 @@ class GameBot(commands.Cog):
 
     @commands.command(aliases=['remove-shop'])
     @commands.has_permissions(administrator=True)
-    async def __remove_shop(self, ctx, role):
+    async def __remove_shop(self, ctx, role: discord.Role):
         try:
             if role is None:
                 await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете удалить из магазина")
@@ -96,7 +96,7 @@ class GameBot(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['buy', 'buy-role'])
-    async def __buy(self, ctx, role):
+    async def __buy(self, ctx, role: discord.Role):
         try:
             if role is None:
                 await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете приобрести")
@@ -117,7 +117,7 @@ class GameBot(commands.Cog):
             await ctx.send('Такой роли нет')
 
     @commands.command(aliases=['rep', '+rep'])
-    async def __rep(self, ctx, member):
+    async def __rep(self, ctx, member: discord.Member):
         try:
             if member is None:
                 await ctx.send(f"**{ctx.author}**, укажите участника сервера")
