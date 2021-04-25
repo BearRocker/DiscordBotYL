@@ -70,7 +70,15 @@ class Misc(commands.Cog):
                                        'Music:\n'
                                        'play | url | Plays yt video in your voice channel\n'
                                        'volume | number | set volume level to number\n'
-                                       "stop | None | Stops audio if it's playing"
+                                       "stop | None | Stops audio if it's playing\n"
+                                       "Game:\n"
+                                       "tictactoe | @user1 @user2 | Play tictactoe with another player\n"
+                                       "place | 1 - 9 | For playing tictactoe\n"
+                                       "Role shop:\n"
+                                       "shop | None | Get all roles that available to buy\n"
+                                       "buy | @role | If you have enough money you can buy role\n"
+                                       "rep | @user | Give +1 reputation to user\n"
+                                       "balance | @user | Send balance for @user"
                                        '```')
         if ctx.message.author.guild_permissions.manage_messages:
             await ctx.message.channel.send('```'
@@ -81,7 +89,13 @@ class Misc(commands.Cog):
                                            ' needs manage_messages\n'
                                            'set_muted_role | role_id | sets muted role | needs administrator\n'
                                            'mute | @user minutes reason | gives user MUTE role and removes other roles'
-                                           ' | needs administrator```')
+                                           ' | needs administrator\n'
+                                           'add-shop | @role price | Set role that can be available to puchase with'
+                                           ' money from tictactoe | needs administrator\n'
+                                           'award | @user amount | Gives user amount of money | needes administrator\n'
+                                           'take | @user amount | Take from user amount | needes administrator\n'
+                                           'remove-shop | @role | Remove role from shop | needes administrator\n'
+                                           '```')
 
     def create_embed(self):
         r = random.randint(0, 255)
