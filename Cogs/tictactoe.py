@@ -25,7 +25,7 @@ class TicTacToe(commands.Cog):
         ]
 
     @commands.command()
-    async def tictactoe(self, ctx, p1: discord.User = None, p2: discord.User = None):
+    async def tictactoe(self, ctx, p1: discord.User = None, p2: discord.User = None): # начало игры
 
         if self.gameOver:
             self.board = [":white_large_square:", ":white_large_square:", ":white_large_square:",
@@ -55,7 +55,7 @@ class TicTacToe(commands.Cog):
             await ctx.send("Игра уже идет! Закончите, прежде чем начинать новую.")
 
     @commands.command()
-    async def place(self, ctx, pos: int):
+    async def place(self, ctx, pos: int): # сама игра
         if not self.gameOver:
             mark = ""
             if self.turn == ctx.author:
@@ -110,27 +110,26 @@ class TicTacToe(commands.Cog):
             else:
                 await ctx.send("Начните новую игру с помощью команды !tictactoe.")
 
-    def checkWinner(self, check_winer, mark):
+    def checkWinner(self, check_winer, mark): # проверка победителя
         for check in check_winer:
             if self.board[check[0]] == mark and self.board[check[1]] == mark and self.board[check[2]] == mark:
                 self.gameOver = True
 
     @tictactoe.error
-    async def tictactoe_error(self, ctx, error):
-        print(error)
+    async def tictactoe_error(self, ctx, error): # ошибка ,когда не ввели одного / двух игроков
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Пожалуйста, укажите 2 игроков для этой команды.")
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Не забудьте упомянуть игроков (ie. <@688534433879556134>).")
 
     @place.error
-    async def place_error(self, ctx, error):
+    async def place_error(self, ctx, error): # проверка на нормальный ввод числа
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.send("Пожалуйста, введите позицию, которую вы хотите отметить.")
         elif isinstance(error, commands.BadArgument):
             await ctx.send("Убедитесь, что вы ввели целое число.")
 
     @commands.command()
-    async def restart(self, ctx):
+    async def restart(self, ctx): # отмена игры
         self.gameOver = True
         await ctx.send("Игра отменена.")
