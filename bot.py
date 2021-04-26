@@ -80,6 +80,11 @@ class DiscordBot(commands.Bot):  # Класс бота, в котором зак
         embed = self.create_embed('', 0, 255, 0)
         embed.add_field(name='New member! :tada:', value=member.name)
         await channel.send(embed=embed)
+        if cursor.execute(f"SELECT id FROM users WHERE id = {member.id}").fetchone() is None:
+            cursor.execute(f"INSERT INTO users VALUES ('{member}', {member.id}, 0, 0, 1, {member.guild.id})")
+            connection.commit()
+        else:
+            pass
 
     async def on_member_remove(self, member):  # При выходе пользователя с сервера выводится сообщение об этом
         channel = self.get_channel(config.GREETING_CHANNEL_ID)
