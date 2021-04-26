@@ -56,6 +56,7 @@ class GameBot(commands.Cog):
     @commands.command(aliases=['add-shop'])
     @commands.has_permissions(administrator=True)
     async def __add_shop(self, ctx, role: discord.Role = None, cost: int = None):
+        check = self.cursor.execute("SELECT * FROM shop WHERE role_id={}".format(role.id)).fetchall()
         if role is None:
             await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете внести в магазин")
         else:
@@ -63,6 +64,8 @@ class GameBot(commands.Cog):
                 await ctx.send(f"**{ctx.author}**, укажите стоимость для даннойй роли")
             elif cost < 0:
                 await ctx.send(f"**{ctx.author}**, стоимость роли не может быть такой маленькой")
+            elif check:
+                await ctx.send("такая роль уже есть")
             else:
                 self.cursor.execute("INSERT INTO shop VALUES ({}, {}, {})".format(role.id, ctx.guild.id, cost))
                 self.connection.commit()
