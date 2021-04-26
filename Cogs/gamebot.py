@@ -8,20 +8,20 @@ class GameBot(commands.Cog):
         self.connection = connection
         self.cursor = cursor
 
-    @commands.command(aliases=['balance', 'cash'])
+    @commands.command(aliases=['balance', 'cash']) # команда которая выводит баланс
     async def __balance(self, ctx, member: discord.Member = None):
         if member is None:
             await ctx.send(embed=discord.Embed(
-                description=f"""Баланс пользователя **{ctx.author}** составляет **{self.cursor.execute("SELECT cash FROM users WHERE id = {}".format(ctx.author.id)).fetchone()[0]} :leaves:**"""
+                description=f"""Баланс пользователя **{ctx.author}** составляет **{self.cursor.execute("SELECT cash FROM users WHERE id = {}".format(ctx.author.id)).fetchone()[0]} :leaves:**""" # выводит баланс другого пользователя
             ))
         else:
             await ctx.send(embed=discord.Embed(
-                description=f"""Баланс пользователя **{member}** составляет **{self.cursor.execute("SELECT cash FROM users WHERE id = {}".format(member.id)).fetchone()[0]} :leaves:**"""
+                description=f"""Баланс пользователя **{member}** составляет **{self.cursor.execute("SELECT cash FROM users WHERE id = {}".format(member.id)).fetchone()[0]} :leaves:**""" # выводит свой баланс
             ))
 
     @commands.command(aliases=['award'])
     @commands.has_permissions(administrator=True)
-    async def __award(self, ctx, member: discord.Member = None, amount: int = None):
+    async def __award(self, ctx, member: discord.Member = None, amount: int = None): # добавляет деньги на счет
         if member is None:
             await ctx.send(f"**{ctx.author}**, укажите пользователя, которому желаете выдать определенную сумму")
         else:
@@ -36,7 +36,7 @@ class GameBot(commands.Cog):
 
     @commands.command(aliases=['take'])
     @commands.has_permissions(administrator=True)
-    async def __take(self, ctx, member: discord.Member = None, amount=None):
+    async def __take(self, ctx, member: discord.Member = None, amount=None): # убирает деньги с счета
         if member is None:
             await ctx.send(f"**{ctx.author}**, укажите пользователя, у которого желаете отнять сумму денег")
         else:
@@ -55,7 +55,7 @@ class GameBot(commands.Cog):
 
     @commands.command(aliases=['add-shop'])
     @commands.has_permissions(administrator=True)
-    async def __add_shop(self, ctx, role: discord.Role = None, cost: int = None):
+    async def __add_shop(self, ctx, role: discord.Role = None, cost: int = None): # добавляет в магазин роль
         check = self.cursor.execute("SELECT * FROM shop WHERE role_id={}".format(role.id)).fetchall()
         if role is None:
             await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете внести в магазин")
@@ -73,7 +73,7 @@ class GameBot(commands.Cog):
 
     @commands.command(aliases=['remove-shop'])
     @commands.has_permissions(administrator=True)
-    async def __remove_shop(self, ctx, role: discord.Role = None):
+    async def __remove_shop(self, ctx, role: discord.Role = None): # убирает с магазина роль
         try:
             if role is None:
                 await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете удалить из магазина")
@@ -85,7 +85,7 @@ class GameBot(commands.Cog):
             await ctx.send(f'Такой роли нет')
 
     @commands.command(aliases=['shop'])
-    async def __shop(self, ctx):
+    async def __shop(self, ctx): # выводит все роли которые есть в магазине
         embed = discord.Embed(title='Магазин ролей')
         for row in self.cursor.execute("SELECT role_id, cost FROM shop WHERE id = {}".format(ctx.guild.id)):
             if ctx.guild.get_role(row[0]):
@@ -98,8 +98,8 @@ class GameBot(commands.Cog):
                 pass
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['buy', 'buy-role'])
-    async def __buy(self, ctx, role: discord.Role = None):
+    @commands.command(aliases=['buy', 'buy-role']) 
+    async def __buy(self, ctx, role: discord.Role = None): # покупает роль пользователю
         try:
             if role is None:
                 await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете приобрести")
@@ -120,7 +120,7 @@ class GameBot(commands.Cog):
             await ctx.send('Такой роли нет')
 
     @commands.command(aliases=['rep', '+rep'])
-    async def __rep(self, ctx, member: discord.Member = None):
+    async def __rep(self, ctx, member: discord.Member = None): # дает похвалау пользователю
         try:
             if member is None:
                 await ctx.send(f"**{ctx.author}**, укажите участника сервера")
@@ -134,7 +134,7 @@ class GameBot(commands.Cog):
         except Exception:
             await ctx.send('Такого пользователья нет')
 
-    @commands.command(aliases=['leaderboard', 'lb'])
+    @commands.command(aliases=['leaderboard', 'lb']) # выводит топ 10
     async def __leaderboard(self, ctx):
         embed = discord.Embed(title='Топ 10 сервера')
         counter = 0
