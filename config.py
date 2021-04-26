@@ -1,4 +1,5 @@
 import os
+from boto.s3.connection import S3Connection
 
 PREFIX = "!"
 
@@ -10,9 +11,9 @@ DISAGREE_REACTION = '❎'
 
 LOGS_CHANNEL_ID = 714047412691402804
 
-GIPHY_API_KEY = os.environ.get('GIPHY_API_KEY')
+GIPHY_API_KEY = S3Connection(os.environ.get('GIPHY_API_KEY'))
 
-DISCORD_TOKEN = os.environ.get('DISCORD_TOKEN')
+DISCORD_TOKEN = S3Connection(os.environ.get('DISCORD_TOKEN'))
 
 MUTE_ROLE = 833395176181334016
 
