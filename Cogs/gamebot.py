@@ -61,7 +61,7 @@ class GameBot(commands.Cog):
             await ctx.send(f"**{ctx.author}**, укажите роль, которую вы желаете внести в магазин")
         else:
             if cost is None:
-                await ctx.send(f"**{ctx.author}**, укажите стоимость для даннойй роли")
+                await ctx.send(f"**{ctx.author}**, укажите стоимость для данной роли")
             elif cost < 0:
                 await ctx.send(f"**{ctx.author}**, стоимость роли не может быть такой маленькой")
             elif check:
