@@ -50,6 +50,12 @@ class Misc(commands.Cog):
         except TypeError:
             channel = ctx.message.channel
             await channel.send('WRONG TYPE')
+            
+    @commands.command(name='get_avatar')
+    async def ava(self, ctx, user: discord.User):
+        avatar = user.avatar_url
+        user = ctx.message.author
+        await user.send(avatar)
 
     @commands.command(name='help')
     async def help(self, ctx):
